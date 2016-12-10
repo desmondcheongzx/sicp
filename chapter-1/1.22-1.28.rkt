@@ -67,3 +67,20 @@
   (test 20))
 
 ;ex 1.24: yes it's approximately log n growth
+
+;ex 1.25: the intermediate numbers are huge... that can't be good for anyone
+
+;ex 1.26: fast exponentiation relies on the idea that whenever you hit a
+;fork with two identical branches, you just compute the branch once and square
+;it. For an approximately binary tree, this gives us a log n number of branches
+;to compute -- one for each level of depth in the tree -- rather than n number
+;of nodes to compute. If you're going to evaluate every node anyway, then you
+;have to make n computations.
+
+(define (carmichael-test n)
+  (define (test a)
+    (cond ((= a n) #t)
+	  ((= (expmod a n n) a) (test (inc a)))
+	  (else #f)))
+  (test 1))
+;yes, they're carmichael numbers
