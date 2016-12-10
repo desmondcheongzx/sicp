@@ -84,3 +84,26 @@
 	  (else #f)))
   (test 1))
 ;yes, they're carmichael numbers
+
+(define (mr-expmod base exp mod)
+  (cond ((= exp 0) 1)
+	((even? exp)
+	 (let* ((val (mr-expmod base (/ exp 2) mod))
+		(result (remainder (square val) mod)))
+	   (if (and (not (= val 1)) (not (= val (dec mod)))
+		    (= result 1))
+	       0
+	       result)))
+	(else (remainder (* base (mr-expmod base (dec exp) mod)) mod))))
+
+(define (miller-rabin-test n)
+  (define (test a)
+    (= (mr-expmod a (dec n) n) 1))
+  (test (inc (random (dec n)))))
+
+(define (mr-fast-prime? n)
+  (define (test count)
+    (cond ((= count 0) #t)
+	  ((miller-rabin-test n) (test (dec count)))
+	  (else #f)))
+  (test 20))
