@@ -1,4 +1,5 @@
 #lang sicp
+(#%require (only racket/base random))
 
 (define (divisor? x a)
   (= (remainder x a) 0))
@@ -41,3 +42,28 @@
 	  (search-for-primes (inc pos) (dec count))
 	  (search-for-primes (inc pos) count))))
 ;yes, runtime increases very approximately by a factor of sqrt n
+;but that's only obvious for larger n of course, where the overheads
+;are less significant
+
+;ex 1.23: It's faster, but not by such a larger factor
+;There's still overheads and fixed costs I suppose
+
+(define (expmod base exp mod)
+  (cond ((= exp 0) 1)
+	((even? exp)
+	 (remainder (square (expmod base (/ exp 2) mod)) mod))
+	(else (remainder (* base (expmod base (dec exp) mod)) mod))))
+
+(define (fermat-test n)
+  (define (test a)
+    (= (expmod a n n) a))
+  (test (inc (random (dec n)))))
+
+(define (fast-prime? n)
+  (define (test count)
+    (cond ((= count 0) #t)
+	  ((fermat-test n) (test (dec count)))
+	  (else #f)))
+  (test 20))
+
+;ex 1.24: yes it's approximately log n growth
