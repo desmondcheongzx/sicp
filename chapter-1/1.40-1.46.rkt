@@ -104,6 +104,4 @@
 (define (fixed-point f first-guess)
   (define (close-enough? x)
     (< (abs (- x (f x))) tolerance))
-  (define (improve guess)
-    (f guess))
-  ((iterative-improve close-enough? improve) 1.0))
+  ((iterative-improve close-enough? f) 1.0))
