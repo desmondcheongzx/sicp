@@ -17,15 +17,6 @@
 			(derivative (multiplicand exp) var))
 	  (make-product (multiplicand exp)
 			(derivative (multiplier exp) var))))
-	((exponentiation? exp)
-	 (make-product
-	  (make-product (exponent exp)
-			(make-exponentiation
-			 (base exp)
-			 (make-sum
-			  (exponent exp)
-			  -1)))
-	  (derivative (base exp) var)))
 	(else (display ":("))))
 
 (define (variable? e) (symbol? e))
@@ -50,28 +41,53 @@
   (and (number? x) (= x num)))
 
 (define (sum? x)
-  (and (pair? x) (eq? (cadr x) '+)))
+  (define (iter cur right)
+    (cond ((eq? cur '+) #t)
+	  ((pair? right) (iter (car right)
+			       (cdr right)))
+	  (else #f)))
+  (and (pair? x) (iter (car x) (cdr x))))
 
-(define (addend s) (car s))
+(define (strip exp)
+  (if (not (pair? (cdr exp)))
+      (car exp)
+      exp))
 
-(define (augend s) (caddr s))
+(define (addend s)
+  (define (iter left cur right)
+    (if (eq? cur '+)
+	left
+	(iter (append left (list cur))
+	      (car right) (cdr right))))
+  (strip (iter '()  (car s) (cdr s))))
+  
+
+(define (augend s)
+  (define (iter cur right)
+    (if (eq? cur '+)
+	right
+	(iter (car right) (cdr right))))
+  (strip (iter (car s) (cdr s))))
 
 (define (product? x)
-  (and (pair? x) (eq? (cadr x) '*)))
+  (define (iter cur right)
+    (cond ((eq? cur '*) #t)
+	  ((pair? right) (iter (car right)
+			       (cdr right)))
+	  (else #f)))
+  (and (pair? x) (iter (car x) (cdr x))))
 
-(define (multiplier p) (car p))
+(define (multiplier p)
+  (define (iter left cur right)
+    (if (eq? cur '*)
+	left
+	(iter (append left (list cur))
+	      (car right) (cdr right))))
+  (strip (iter '()  (car p) (cdr p))))
 
-(define (multiplicand p) (caddr p))
-
-(define (exponentiation? x)
-  (and (pair? x) (eq? (cadr x) '**)))
-
-(define (base e) (car e))
-
-(define (exponent e) (caddr e))
-
-(define (make-exponentiation x n)
-  (cond ((=number? n 0) 1)
-	((=number? n 1) x)
-	((and (number? x) (number? n)) (expt x n))
-	(else (list '** x n))))
+(define (multiplicand p)
+  (define (iter cur right)
+    (if (eq? cur '*)
+	right
+	(iter (car right) (cdr right))))
+  (strip (iter (car p) (cdr p))))
