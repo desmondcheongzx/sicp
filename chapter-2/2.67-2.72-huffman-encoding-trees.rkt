@@ -26,6 +26,31 @@
 ;...................................-_-
 ;ex 2.70: It takes 84 bits to encode using a prefix code. With a fixed-length code it would've taken 108 bits
 
+;ex 2.71:
+;Tree formed:
+;                        /         \
+;              /         \          2^n
+;      /       \          2^(n-1)
+;      \        2^(n-2)
+;  .....      
+; / \
+;1   2
+;The most frequen symbol has one bit, the least frequent has n bits
+
+;ex 2.72: Order of growth for the most frequent symbol:
+;         It takes one check to see whether the symbol is in the first left or right branch,
+;         each operation taking about O(n) to check. Hence, order of growth is O(n).
+
+;         Order of growth for the least frequent symbol:
+;         On the other hand, the less frequent symbols are closer to the front of the list of
+;         symbols, and so can be checked much faster. In O(1) time for the least frequent.
+;         Moreover, there's only n levels of depth to check, so the overall order of growth is
+;         O(n*1) = O(n).
+
+;         The more frequent the symbol, the less deep you need to go. However, more frequent symbols
+;         are arranged at the back, so it takes more steps to verify if they're a member of the set.
+;         Practically speaking, it should average to about an O(n) process.
+
 (define (generate-huffman-tree pairs)
   (successive-merge (make-leaf-set pairs)))
 
