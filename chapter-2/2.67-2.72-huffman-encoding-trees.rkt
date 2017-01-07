@@ -1,13 +1,14 @@
 #lang sicp
 
 #|
-Huffman encoding trees encode messages with the least number of bits required. It does so by generating codes for each symbol, with more common symbols
-having shorter codes. As demonstrated in our program, this process is kept optimal by merging the smallest two leaves or subtrees of symbols, such that
-every additional bit per code is justified by the fact that the frequency sum of symbols in the subtree is less than or equal to the frequency sum of the
-subtree that's one bit shorter.
+Huffman encoding trees encode messages with the least number of bits required. It does so by generating codes for each symbol,
+with more common symbols having shorter codes. As demonstrated in our program, this process is kept optimal by merging the
+smallest two leaves or subtrees of symbols, such that every additional bit per code is justified by the fact that the
+frequency sum of symbols in the subtree is less than or equal to the frequency sum of the subtree that's one bit shorter.
 
-To properly encode and decode the message, a unique code is generated for each symbol, such that no code is the prefix of another. This allows us to
-iterate through the encoded bits without having to worry about overlapping results, creating what's known as a prefix code.
+To properly encode and decode the message, a unique code is generated for each symbol, such that no code is the prefix of
+another. This allows us to iterate through the encoded bits without having to worry about overlapping results, creating what's
+known as a prefix code.
 |#
 
 (#%require (only racket/base print-as-expression print-mpair-curly-braces))
